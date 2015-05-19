@@ -1,9 +1,9 @@
 Duc
 ===
 
-Duc (trans*duc*er) is a data transformation tool for Python.
+Duc (trans\ *duc*\ er) is a data transformation tool for Python.
 
-.. code-block:: pyton
+.. code-block:: pycon
 
     >>> d = Duc({'name': {'validator': {'type': 'string'}, 'transform': {'name': 'number_name', 'type': 'integer'}})
     >>> v.validate({'name': '518'})
