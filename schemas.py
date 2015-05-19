@@ -9,7 +9,7 @@ user_data = {
     'network': 'VK',
     'bYear': '1994',
     'group': 'A',
-    'uid': '41472389'
+    'uid': '414s72389'
 }
 
 user_data_schema = {

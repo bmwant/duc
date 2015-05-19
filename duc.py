@@ -9,6 +9,7 @@ class Duc(object):
         self._data = data
         self._result = None
         self._errors = None
+        self._transduced = False
 
     def validate(self, data=None):
         validation_schema = {}
@@ -46,15 +47,22 @@ class Duc(object):
                     name = transform_data['name']
 
                 if 'type' in transform_data:
+                    caster = self._get_cast(transform_data['type'])
+                    to_cast = data[field]
                     try:
-                        result[name] = self._get_cast(transform_data['type'])(data[field])
-                    except Exception as e:
-                        raise e
+                        result[name] = caster(to_cast)
+                    except ValueError as e:
+                        self._transduced = False
+                        raise ValueError('Cannot cast {}: {} with built-in {}'.format(name, to_cast, caster))
                 else:
                     result[name] = data[field]
 
-        self._result = result
-        return True
+        if self._transduced:
+            self._result = result
+        else:
+            self._result = None
+
+        return self._transduced
 
     def _get_cast(self, cast_key: str) -> type:
         casters = {
