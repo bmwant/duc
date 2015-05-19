@@ -18,7 +18,7 @@ About
 Sometimes your application receives data from one place and then (after some
 transformation) sends it to other place. Often you cannot change the format of
 data you receive because source dictates its own requirements. But with Duc you
-can validate input (using 'Cerberus https://github.com/nicolaiarocci/cerberus')
+can validate input (using `Cerberus <https://github.com/nicolaiarocci/cerberus>`_)
 and make transformations on it (using similar syntax).
 Particular example is when you get data from a client and save it to database.
 You want to validate it or leave it *as-is* (if you trust client) but select
@@ -48,7 +48,7 @@ Also you can install it from Github directly (to use latest version)
 
 Testing
 -------
-Just run (with `Pytest http://pytest.org/latest/`_):
+Just run (with `Pytest <http://pytest.org/latest/>`_):
 
 .. code-block:: console
 
