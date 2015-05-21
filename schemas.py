@@ -9,7 +9,7 @@ user_data = {
     'network': 'VK',
     'bYear': '1994',
     'group': 'A',
-    'uid': '414s72389'
+    'uid': '41472389'
 }
 
 user_data_schema = {
@@ -29,7 +29,9 @@ user_data_schema = {
         }
     },
     'bYear': {
-        'transform': None
+        'transform': {
+            'out': False
+        }
     },
     'uid': {
         'validator': {
@@ -37,7 +39,7 @@ user_data_schema = {
         },
         'transform': {
             'name': 'user_id',
-            'type': 'integer'
+            'type': 'integer',
         }
     },
 }
@@ -47,3 +49,4 @@ print(d.validate(user_data))
 print(d.errors)
 print(d.transduce(user_data))
 print(d.result)
+print(d.out)

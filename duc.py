@@ -13,6 +13,7 @@ class Duc(object):
         self._result = None
         self._errors = None
         self._transduced = False
+        self._out = []
 
     def validate(self, data=None):
         validation_schema = {}
@@ -33,6 +34,12 @@ class Duc(object):
         return result
 
     def transduce(self, data=None, append_missed=False):
+        """
+        You can also try to transduce unvalidated data
+        :param data:
+        :param append_missed:
+        :return:
+        """
         self._transduced = True
         result = {}
 
@@ -40,6 +47,9 @@ class Duc(object):
             data = self._data
 
         for field, value in self._schema.items():
+            if field not in data:
+                raise ValueError('Input data does not corresponds to schema provided. No such key: %s' % field)
+
             to_transform = True
             if value:
                 if 'transform' in value and value['transform']:
@@ -59,6 +69,13 @@ class Duc(object):
                             raise ValueError('Cannot cast {}: {} with built-in {}'.format(name, to_cast, caster))
                     else:
                         result[name] = data[field]
+
+                    if 'apply' in transform_data and hasattr(transform_data['apply'], '__call__'):
+                        result[name] = transform_data['apply'](result[name])
+
+                    if 'out' in transform_data and transform_data['out'] == False:
+                        continue
+                    self._out.append(name)
                 else:
                     to_transform = False
             else:
@@ -104,6 +121,15 @@ class Duc(object):
         if cast_key in casters:
             return casters[cast_key]
         raise KeyError('No such caster to transduce your data: [%s]' % cast_key)
+
+
+    @property
+    def out(self):
+        out = {}
+        for elem, value in self._result.items():
+            if elem in self._out:
+                out[elem] = value
+        return out
 
     @property
     def result(self):
