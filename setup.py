@@ -4,7 +4,7 @@ with open('README.txt') as file:
     long_description = file.read()
 
 setup(name='duc',
-      version='0.9',
+      version='1.0',
       py_modules=['duc'],
       author='Most Wanted',
       author_email='bmwant@gmail.com',
@@ -20,4 +20,7 @@ setup(name='duc',
           'License :: OSI Approved :: MIT License',
           'Intended Audience :: Developers',
       ],
-      long_description=long_description)
+      long_description=long_description,
+      install_requires=[
+          'cerberus',
+      ])

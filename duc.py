@@ -7,6 +7,7 @@ from cerberus import Validator
 logging.basicConfig(level=logging.DEBUG)
 
 # todo: Add correct value validation for schema objects: check for existence of ('transform', 'validate',) and no other root key
+# todo: Add append output
 
 
 class DottedDict(UserDict):
@@ -65,7 +66,7 @@ class Duc(object):
 
         return result
 
-    def transduce(self, data=None, append_missed=False):
+    def transduce(self, data=None, append_missed=False, append_out=False):
         """
         You can also try to transduce unvalidated data
         :param data:
@@ -126,8 +127,14 @@ class Duc(object):
                     new_field_name = field
                 result[new_field_name] = value
 
+                if new_field_name not in result:
+                    result[new_field_name] = value
+
+        # Append elements that are not listed to the ouput
+        if append_out:
+            for field, value in data.items():
                 if field not in self._schema:
-                    self._out.add(new_field_name)
+                    self._out.add(field)
 
         if self._transduced:
             self._result = result
@@ -162,9 +169,11 @@ class Duc(object):
     @property
     def out(self):
         out = {}
-        for elem, value in self._result.items():
-            if elem in self._out:
-                out[elem] = value
+        for elem in self._out:
+            if elem in self._result:
+                out[elem] = self._result[elem]
+            else:
+                out[elem] = self._data[elem]
         return out
 
     @property

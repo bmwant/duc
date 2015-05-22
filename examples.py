@@ -55,6 +55,39 @@ def apply_some_func():
     pass
 
 
+def append_test():
+    local_schema = {
+        'num': {
+            'transform': {
+                'name': 'number',
+                'type': 'integer',
+                'apply': str
+            }
+        },
+
+    }
+    local_data = {
+        'not_listed1': 'val',
+        'not_listed2': 'val',
+        'num': '324'
+    }
+
+    d = Duc(local_schema, local_data)
+    if d.transduce():
+        print(d.result)
+        print(d.out)
+
+    if d.transduce(append_missed=True):
+        print(d.result)
+        print(d.out)
+
+    if d.transduce(append_out=True):
+        print(d.result)
+        print(d.out)
+
+    if d.transduce(append_missed=True, append_out=True):
+        print(d.result)
+        print(d.out)
+
 if __name__ == '__main__':
-    test_validation()
-    specify_out_data()
+    append_test()
