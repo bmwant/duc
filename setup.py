@@ -4,7 +4,7 @@ with open('README.txt') as file:
     long_description = file.read()
 
 setup(name='duc',
-      version='0.8',
+      version='0.9',
       py_modules=['duc'],
       author='Most Wanted',
       author_email='bmwant@gmail.com',

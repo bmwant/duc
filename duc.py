@@ -1,19 +1,51 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Most Wanted'
 import logging
+from collections import UserDict
 from cerberus import Validator
 
 logging.basicConfig(level=logging.DEBUG)
+
+# todo: Add correct value validation for schema objects: check for existence of ('transform', 'validate',) and no other root key
+
+
+class DottedDict(UserDict):
+    """
+    Dotted dictionary provides accessing dictionary items by dot-style attribute accessing
+    """
+    def __init__(self, data=None):
+        if 'data' not in self.__dict__:
+            self.__dict__['data'] = {}
+
+        if data is not None:
+            super(DottedDict, self).__init__(data)
+
+    def __getattr__(self, key):
+        try:
+            return self.data[key]
+        except KeyError as e:
+            raise AttributeError(key)
+
+    def __setitem__(self, name, value):
+        self.data[name] = value
+
+    def __setattr__(self, key, value):
+        if 'data' not in self.__dict__:
+            self.__dict__['data'] = {}
+        self.__dict__['data'][key] = value
+        super(DottedDict, self).__setattr__(key, value)
 
 
 class Duc(object):
     def __init__(self, transduce_schema, data=None):
         self._schema = transduce_schema
-        self._data = data
+        self._data = DottedDict()
+        if data is not None:
+            self._data.update(data)
         self._result = None
         self._errors = None
         self._transduced = False
-        self._out = []
+        self._out = set()
 
     def validate(self, data=None):
         validation_schema = {}
@@ -75,7 +107,7 @@ class Duc(object):
 
                     if 'out' in transform_data and transform_data['out'] == False:
                         continue
-                    self._out.append(name)
+                    self._out.add(name)
                 else:
                     to_transform = False
             else:
@@ -85,13 +117,17 @@ class Duc(object):
                 logging.debug('No need to transform %s' % field)
                 result[field] = data[field]
 
+        # Append elements that are not listed in schema
         if append_missed:
             for field, value in data.items():
                 try:
                     new_field_name = self._schema[field]['transform']['name']
                 except KeyError:
-                    result[field] = value
+                    new_field_name = field
+                result[new_field_name] = value
 
+                if field not in self._schema:
+                    self._out.add(new_field_name)
 
         if self._transduced:
             self._result = result
@@ -113,7 +149,7 @@ class Duc(object):
             'dict': dict,
             'list': list,
             'set': set,
-
+            # todo: add implementation
             'object': not_impl,
             'datetime': not_impl,
             'number': not_impl

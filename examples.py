@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Most Wanted'
-from duc import Duc
+from duc import Duc, DottedDict
 
 schema = {
     'num': {
@@ -49,6 +49,7 @@ def specify_out_data():
     if d.transduce():
         print(d.result)
         print(d.out)
+
 
 def apply_some_func():
     pass
