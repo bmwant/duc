@@ -6,8 +6,6 @@ from cerberus import Validator
 
 logging.basicConfig(level=logging.DEBUG)
 
-# todo: Add correct value validation for schema objects: check for existence of ('transform', 'validate',) and no other root key
-
 
 class DottedList(UserList):
     """
@@ -141,7 +139,7 @@ class Duc(object):
                 if param not in allowed_params:
                     return False
 
-            allowed_transform = ('name', 'type', 'apply', )
+            allowed_transform = ('name', 'type', 'apply', 'out', )
             if 'transform' in value:
                 operations = value['transform']
                 if not isinstance(operations, dict):
@@ -176,12 +174,13 @@ class Duc(object):
     def transduce(self, data=None, append_missed=False, append_out=False):
         """
         You can also try to transduce unvalidated data
-        :param data:
-        :param append_missed:
-        :return:
+        :param data: Data to transform based on initial schema
+        :param append_missed: append missed items that are not listed in shema to resulting data
+        :param append_out: append missed items that are not listed in schema to output
+        :return: True if transforming succeed
         """
         self._transduced = True
-        result = {}
+        result = DottedDict()
 
         if data is None:
             data = self._data
@@ -265,7 +264,12 @@ class Duc(object):
 
     @staticmethod
     def cast_to_datetime(date):
-        pass
+        from dateutil.parser import parse
+        try:
+            result = parse(date)
+        except ValueError:
+            ValueError('Cannot parse a date from %s value' % date)
+        return result
 
     def _get_cast(self, cast_key: str) -> type:
 

@@ -6,8 +6,9 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                           os.pardir))
 sys.path.insert(0, parent_dir)
 
+import datetime
 import pytest
-from duc import Duc
+from duc import Duc, DottedDict
 
 test_data = {
     'check': 0,
@@ -184,3 +185,71 @@ def test_wrong_schema():
 
     with pytest.raises(ValueError):
         d = Duc(ws4)
+
+
+def test_result_type():
+    minus_32 = lambda x: x-32
+    schema = {
+        'id': {
+            'transform': {
+                'name': 'user_id',
+                'type': 'string',
+                'apply': str.upper
+            }
+        },
+
+        'inc_age': {
+            'transform': {
+                'name': 'age',
+                'type': 'integer',
+                'apply': minus_32,
+                'out': False
+            }
+        }
+
+    }
+
+    data_input = {
+        'id': 'user555666',
+        'inc_age': '45'
+    }
+
+    data_output = {
+        'user_id': 'USER555666'
+    }
+
+    data_result = {
+        'user_id': 'USER555666',
+        'age': 13
+    }
+
+    d = Duc(schema, data_input)
+    d.transduce()
+    assert d.result == data_result
+    assert d.out == data_output
+    assert isinstance(d.result, DottedDict)
+    assert d.result.user_id == 'USER555666'
+    assert d.result.age == 13
+
+
+def test_date_transforming():
+    schema = {
+        'created': {
+            'transform': {
+                'name': 'date_created',
+                'type': 'datetime'
+            }
+        }
+    }
+
+    data_input = {
+        'created': '09-27-1996',
+    }
+
+    d = Duc(schema)
+    d.transduce(data=data_input)
+    assert d.result['date_created'].year == 1996
+    assert isinstance(d.result.date_created, datetime.datetime)
+
+if __name__ == '__main__':
+    pass
