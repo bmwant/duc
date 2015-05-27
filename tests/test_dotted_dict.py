@@ -13,6 +13,7 @@ from duc import DottedDict
 
 
 def test_dict_creation():
+    empty_dct = DottedDict()
     dct = DottedDict({'k': 1, 'v': 2})
     assert isinstance(dct, DottedDict)
     assert isinstance(dct, collections.Mapping)
@@ -84,10 +85,18 @@ def test_nested_levels():
     assert dct.k.e1.v == [7, 8, 9]
     assert dct.k.e1.v.e2 == 9
 
+def test_nested_attributes():
+    dct = DottedDict()
+    dct.k = [1, 2, 3]
+    assert dct.k.e0 == 1
+    assert dct.k.e2 == 3
+    dct.m = {'i': 10,
+             'j': {
+                 'v': 'very nested'
+             }}
+    assert dct.m.i == 10
+    assert dct.m.j.v == 'very nested'
+
 
 if __name__ == '__main__':
-    dct = DottedDict({'key1': 'value1', 'key2': 'value2'})
-    print(dct)
-    print(dct.keys())
-    print(dct.values())
-    print(dct.items())
+    test_nested_attributes()

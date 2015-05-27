@@ -12,6 +12,7 @@ from duc import DottedList
 
 
 def test_list_creation():
+    empty_arr = DottedList()
     arr = DottedList([1, 2, 3, 4])
     assert isinstance(arr, DottedList)
     assert isinstance(arr, collections.Sequence)
@@ -62,6 +63,14 @@ def test_nested_levels():
     assert arr.e1.l.e1.i == 'very nested'
 
 
+def test_nested_attributes():
+    arr = DottedList([1])
+    arr.e0 = [3, 5, [2, 9]]
+    assert arr.e0.e0 == 3
+    assert arr.e0.e2.e0 == 2
+    assert arr.e0.e2.e1 == 9
+
 if __name__ == '__main__':
     arr = DottedList([1, [5, 7]])
     print(type(arr.e1))
+    arr.e0 = [3, 5, 7]

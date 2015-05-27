@@ -52,10 +52,12 @@ class DottedList(UserList):
             pass
 
         if e == 'e' and isinstance(index, int):
-            #todo: check for list
-            self.data[index] = value
-
-        super().__setattr__(key, value)
+            if isinstance(value, list):
+                self.data[index] = DottedList(value)
+            else:
+                self.data[index] = value
+        else:
+            super().__setattr__(key, value)
 
 
 class DottedDict(UserDict):
@@ -64,7 +66,8 @@ class DottedDict(UserDict):
     """
     def __init__(self, data=None):
         if data is not None and isinstance(data, dict):
-            self.__dict__['data'] = {}
+            super().__init__()
+            #self.__dict__['data'] = {}
             for key, value in data.items():
                 if isinstance(value, dict):
                     self.data[key] = DottedDict(value)
@@ -85,19 +88,17 @@ class DottedDict(UserDict):
 
     def __setitem__(self, name, value):
         if isinstance(value, dict):
-            self.data[name] = DottedDict(value)
+            self.__dict__['data'][name] = DottedDict(value)
         elif isinstance(value, list):
-            self.data[name] = DottedList(value)
+            self.__dict__['data'][name] = DottedList(value)
         else:
-            self.data[name] = value
+            self.__dict__['data'][name] = value
 
     def __setattr__(self, key, value):
-        if isinstance(value, dict):
-            self.data[key] = DottedDict(value)
-        elif isinstance(value, list):
-            self.data[key] = DottedList(value)
+        if 'data' in self.__dict__:
+            self.__setitem__(key, value)
         else:
-            self.data[key] = value
+            super().__setattr__(key, value)
 
     def __delattr__(self, item):
         if item in self.data:
