@@ -4,6 +4,9 @@ python:
   - "3.4"
 # command to install dependencies
 install:
+  - "pip install python-coveralls"
   - "pip install -r requirements.txt"
 # command to run tests
-script: py.test tests
+script: py.test tests --cov coveralls
+after_success:
+  - coveralls
