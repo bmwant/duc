@@ -1,5 +1,7 @@
 Duc
 ===
+.. image:: https://travis-ci.org/bmwant21/duc.svg?branch=master
+    :target: https://travis-ci.org/bmwant21/duc
 
 Duc (trans\ *duc*\ er) is a data transformation tool for Python.
 
