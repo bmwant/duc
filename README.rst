@@ -56,5 +56,5 @@ Just run (with `Pytest <http://pytest.org/latest/>`_):
 
 Copyright
 ---------
-Cerberus is an open source project by `Most Wanted
+Duc is an open source project by `Most Wanted
 <http://bmwlog.pp.ua>`_.
