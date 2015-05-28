@@ -9,6 +9,6 @@ install:
   - "pip install coverage"
   - "pip install -r requirements.txt"
 # command to run tests
-script: py.test tests --cov coveralls
+script: py.test tests --doctest-modules --cov duc.py
 after_success:
   - coveralls
